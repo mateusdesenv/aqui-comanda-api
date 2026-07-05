@@ -1,0 +1,78 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Build
+dist/
+build/
+out/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.*.local
+
+# Firebase credentials / service accounts
+firebase-service-account.json
+serviceAccountKey.json
+*-firebase-adminsdk-*.json
+credentials.json
+
+# Logs
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Runtime data
+tmp/
+temp/
+.cache/
+uploads/
+storage/
+backups/
+exports/
+imports/
+
+# Coverage / tests
+coverage/
+.nyc_output/
+junit.xml
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker / local volumes
+docker-data/
+mongo-data/
+
+# Vercel / deployment
+.vercel/
+
+# ESLint / Prettier cache
+.eslintcache
+.prettiercache
+
+# Misc
+*.local
