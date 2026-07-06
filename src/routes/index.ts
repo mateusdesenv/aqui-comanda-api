@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { tenantMiddleware } from '../middlewares/tenant.middleware';
-import { authRoutes } from '../modules/auth/auth.routes';
+import { authRoutes, publicAuthRoutes } from '../modules/auth/auth.routes';
 import { backupRoutes } from '../modules/backups/backup.routes';
 import { caixaRoutes } from '../modules/caixa/caixa.routes';
 import { clienteRoutes } from '../modules/clientes/cliente.routes';
@@ -17,6 +17,7 @@ import { produtoRoutes } from '../modules/produtos/produto.routes';
 
 export const routes = Router();
 
+routes.use('/auth', publicAuthRoutes);
 routes.use(authMiddleware);
 routes.use(tenantMiddleware);
 

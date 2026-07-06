@@ -17,7 +17,10 @@ const membershipSchema = new Schema(
     firebaseUid: { type: String, required: true, index: true },
     colaboradorId: { type: String, index: true },
     nome: String,
+    cpf: { type: String, trim: true, index: true },
     email: { type: String, index: true },
+    passwordHash: String,
+    manualAuth: { type: Boolean, default: false, index: true },
     picture: String,
     providerId: String,
     role: { type: String, enum: ['admin', 'colaborador'], default: 'admin' },
@@ -30,6 +33,7 @@ const membershipSchema = new Schema(
 );
 
 membershipSchema.index({ firebaseUid: 1, companyId: 1 }, { unique: true });
+membershipSchema.index({ cpf: 1 }, { unique: true, sparse: true, partialFilterExpression: { cpf: { $type: 'string' }, deletedAt: null } });
 
 export type Membership = InferSchemaType<typeof membershipSchema>;
 export const MembershipModel = model('Membership', membershipSchema, 'memberships');

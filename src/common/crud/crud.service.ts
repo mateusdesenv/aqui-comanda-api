@@ -2,6 +2,7 @@ import { Model, SortOrder } from 'mongoose';
 import { AppError } from '../errors/AppError';
 import { ErrorCodes } from '../errors/error-codes';
 import { buildPagination } from '../utils/api-response';
+import { stripTenantProtectedFields } from '../utils/tenant-payload';
 
 export interface ListOptions {
   page?: number;
@@ -31,10 +32,11 @@ export class CrudService<T = any> {
   async list(scope: TenantScope, options: ListOptions = {}, extraFilter: Record<string, any> = {}) {
     const page = options.page ?? 1;
     const limit = options.limit ?? 20;
+    const cleanExtraFilter = stripTenantProtectedFields(extraFilter);
     const filter: Record<string, any> = {
+      ...cleanExtraFilter,
       tenantId: scope.tenantId,
       deletedAt: null,
-      ...extraFilter,
     };
 
     if (options.search && this.config.searchFields?.length) {
@@ -69,8 +71,10 @@ export class CrudService<T = any> {
   }
 
   async create(scope: TenantScope, payload: Partial<T>) {
+    const cleanPayload = stripTenantProtectedFields(payload as Record<string, any>);
+
     return this.model.create({
-      ...payload,
+      ...cleanPayload,
       tenantId: scope.tenantId,
       companyId: scope.companyId,
       createdBy: scope.userId,
@@ -80,9 +84,11 @@ export class CrudService<T = any> {
   }
 
   async update(scope: TenantScope, id: string, payload: Record<string, any>) {
+    const cleanPayload = stripTenantProtectedFields(payload);
+
     const item = await this.model.findOneAndUpdate(
       { _id: id, tenantId: scope.tenantId, deletedAt: null },
-      { ...payload, updatedBy: scope.userId },
+      { ...cleanPayload, updatedBy: scope.userId },
       { new: true, runValidators: true },
     );
 

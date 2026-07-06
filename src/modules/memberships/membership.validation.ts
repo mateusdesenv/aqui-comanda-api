@@ -9,9 +9,11 @@ const permissaoSchema = z.object({
 });
 
 export const membershipBodySchema = z.object({
-  firebaseUid: z.string().min(1),
+  firebaseUid: z.string().min(1).optional(),
   colaboradorId: z.string().optional(),
   nome: z.string().min(1),
+  cpf: z.string().optional(),
+  senha: z.string().optional(),
   email: z.string().email().optional(),
   role: z.enum(['admin', 'colaborador']).default('colaborador'),
   ativo: z.boolean().default(true),

@@ -51,12 +51,14 @@ Authorization: Bearer <firebase_id_token>
 Configure no `.env`:
 
 ```env
-FIREBASE_PROJECT_ID=
+FIREBASE_PROJECT_ID=aqui-comanda
 FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
 ```
 
-Sem essas variaveis, o Firebase Admin tenta usar credenciais padrao do ambiente.
+Para desenvolvimento local, `FIREBASE_PROJECT_ID` já é suficiente para validar ID tokens do Firebase por chave pública. Para produção, use uma service account real e preencha `FIREBASE_CLIENT_EMAIL` e `FIREBASE_PRIVATE_KEY` com os valores do JSON do Firebase Admin SDK.
+
+Não use a `apiKey` do Firebase Web como `FIREBASE_PRIVATE_KEY`. A API ignora configurações inválidas de service account e inicializa o Admin SDK apenas com `projectId` quando a chave privada não estiver em formato PEM.
 
 ## Endpoints principais
 

@@ -2,6 +2,7 @@ import { AppError } from '../../common/errors/AppError';
 import { ErrorCodes } from '../../common/errors/error-codes';
 import { TenantScope } from '../../common/crud/crud.service';
 import { roundMoney } from '../../common/utils/money';
+import { stripTenantProtectedFields } from '../../common/utils/tenant-payload';
 import { PedidoModel } from './pedido.model';
 
 const workflow = ['aberto', 'em_preparo', 'saiu_entrega', 'entregue'];
@@ -11,20 +12,21 @@ const paymentMap: Record<string, string> = {
 };
 
 function normalizePedidoPayload(payload: Record<string, any>): Record<string, any> {
-  const itens = (payload.itens ?? []).map((item: Record<string, any>) => ({
+  const cleanPayload = stripTenantProtectedFields(payload);
+  const itens = (cleanPayload.itens ?? []).map((item: Record<string, any>) => ({
     ...item,
     quantidade: Number(item.quantidade) || 0,
     precoUnitario: Number(item.precoUnitario) || 0,
     subtotal: roundMoney(Number(item.subtotal) || (Number(item.quantidade) || 0) * (Number(item.precoUnitario) || 0)),
   }));
-  const subtotal = roundMoney(Number(payload.subtotal) || itens.reduce((total: number, item: { subtotal: number }) => total + item.subtotal, 0));
-  const taxaEntrega = Number(payload.taxaEntrega) || 0;
-  const desconto = Number(payload.desconto) || 0;
-  const total = roundMoney(Number(payload.total) || subtotal + taxaEntrega - desconto);
+  const subtotal = roundMoney(Number(cleanPayload.subtotal) || itens.reduce((total: number, item: { subtotal: number }) => total + item.subtotal, 0));
+  const taxaEntrega = Number(cleanPayload.taxaEntrega) || 0;
+  const desconto = Number(cleanPayload.desconto) || 0;
+  const total = roundMoney(Number(cleanPayload.total) || subtotal + taxaEntrega - desconto);
 
   return {
-    ...payload,
-    formaPagamento: payload.formaPagamento ? paymentMap[payload.formaPagamento] ?? payload.formaPagamento : undefined,
+    ...cleanPayload,
+    formaPagamento: cleanPayload.formaPagamento ? paymentMap[cleanPayload.formaPagamento] ?? cleanPayload.formaPagamento : undefined,
     itens,
     subtotal,
     taxaEntrega,

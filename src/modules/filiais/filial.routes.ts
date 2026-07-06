@@ -6,6 +6,8 @@ import { requirePermission } from '../../middlewares/auth.middleware';
 import { FilialModel } from './filial.model';
 import { filialCreateSchema, filialIdSchema, filialListSchema, filialStatusSchema, filialUpdateSchema } from './filial.validation';
 import { uniqueStrings } from '../../common/utils/normalize';
+import { debugSaasContext } from '../../common/utils/saas-debug';
+import { AuthenticatedRequest } from '../../common/types/request';
 
 const router = Router();
 const service = new CrudService(FilialModel, { searchFields: ['nome', 'descricao', 'endereco.cidade'], defaultSort: { nome: 1 } });
@@ -15,8 +17,22 @@ const handlers = createCrudHandlers(service, {
   beforeUpdate: (body) => ({ ...body, colaboradoresIds: Array.isArray(body.colaboradoresIds) ? uniqueStrings(body.colaboradoresIds) : undefined }),
 });
 
-router.get('/', requirePermission('configuracoes', 'leitura'), validate(filialListSchema), handlers.list);
-router.post('/', requirePermission('configuracoes', 'escrita'), validate(filialCreateSchema), handlers.create);
+router.get('/', requirePermission('configuracoes', 'leitura'), validate(filialListSchema), (req, _res, next) => {
+  debugSaasContext('filiais.list', {
+    tenantId: (req as AuthenticatedRequest).tenantId,
+    companyId: (req as AuthenticatedRequest).companyId,
+    query: req.query,
+  });
+  next();
+}, handlers.list);
+router.post('/', requirePermission('configuracoes', 'escrita'), validate(filialCreateSchema), (req, _res, next) => {
+  debugSaasContext('filiais.create', {
+    tenantId: (req as AuthenticatedRequest).tenantId,
+    companyId: (req as AuthenticatedRequest).companyId,
+    nome: req.body?.nome,
+  });
+  next();
+}, handlers.create);
 router.get('/:id', requirePermission('configuracoes', 'leitura'), validate(filialIdSchema), handlers.getById);
 router.put('/:id', requirePermission('configuracoes', 'escrita'), validate(filialUpdateSchema), handlers.update);
 router.patch('/:id/status', requirePermission('configuracoes', 'escrita'), validate(filialStatusSchema), handlers.update);

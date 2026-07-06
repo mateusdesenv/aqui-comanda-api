@@ -10,15 +10,22 @@ import { SettingModel } from '../modules/configuracoes/setting.model';
 async function seed(): Promise<void> {
   await connectDatabase();
 
+  const adminUid = 'dev-admin-firebase-uid';
   const company = await CompanyModel.findOneAndUpdate(
-    { slug: 'default-dev' },
-    { nome: 'Aqui Comanda Dev', slug: 'default-dev', status: 'ativa', plano: 'development' },
+    { ownerFirebaseUid: adminUid },
+    {
+      nome: 'Aqui Comanda Dev',
+      slug: 'default-dev',
+      ownerFirebaseUid: adminUid,
+      ownerEmail: 'admin@aqui-comanda.local',
+      status: 'ativa',
+      plano: 'development',
+    },
     { upsert: true, new: true },
   );
 
   const tenantId = company.id;
   const companyId = company.id;
-  const adminUid = 'dev-admin-firebase-uid';
 
   await MembershipModel.findOneAndUpdate(
     { firebaseUid: adminUid, companyId },

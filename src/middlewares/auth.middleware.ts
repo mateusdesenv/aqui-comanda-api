@@ -4,6 +4,7 @@ import { AppError } from '../common/errors/AppError';
 import { ErrorCodes } from '../common/errors/error-codes';
 import { AuthenticatedRequest, TelaSistema } from '../common/types/request';
 import { findOrCreateMembership } from '../modules/memberships/membership.service';
+import { debugSaasContext } from '../common/utils/saas-debug';
 
 export const authMiddleware: RequestHandler = async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
   const request = req as AuthenticatedRequest;
@@ -27,18 +28,28 @@ export const authMiddleware: RequestHandler = async (req: Request, _res: Respons
     request.user = {
       uid: decodedToken.uid,
       email: decodedToken.email,
-      name: decodedToken.name,
-      picture: decodedToken.picture,
-      providerId: decodedToken.firebase?.sign_in_provider,
-      companyId: membership.companyId,
+	      name: decodedToken.name,
+	      picture: decodedToken.picture,
+	      providerId: decodedToken.firebase?.sign_in_provider,
+	      authProvider: membership.manualAuth ? 'manual' : 'firebase',
+	      companyId: membership.companyId,
       tenantId: membership.tenantId,
       membershipId: membership.id,
       role: membership.role,
       permissoes: membership.permissoes,
     };
-    request.companyId = membership.companyId;
-    request.tenantId = membership.tenantId;
-    next();
+	    request.companyId = membership.companyId;
+	    request.tenantId = membership.tenantId;
+	    debugSaasContext('auth.resolved', {
+	      firebaseUid: decodedToken.uid,
+	      email: decodedToken.email,
+	      membershipId: String(membership.id),
+	      tenantId: membership.tenantId,
+	      companyId: membership.companyId,
+	      role: membership.role,
+	      authProvider: membership.manualAuth ? 'manual' : 'firebase',
+	    });
+	    next();
   } catch (error) {
     if (error instanceof AppError) {
       next(error);

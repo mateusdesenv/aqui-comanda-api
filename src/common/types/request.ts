@@ -21,6 +21,7 @@ export interface RequestUser {
   name?: string;
   picture?: string;
   providerId?: string;
+  authProvider: 'firebase' | 'manual';
   companyId: string;
   tenantId: string;
   membershipId: string;
