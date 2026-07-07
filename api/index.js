@@ -12,7 +12,15 @@ function getRequestPath(req) {
 
 function isStatusRoute(req) {
   const path = getRequestPath(req);
-  return path === '/' || path === '/health' || path === '/api/health' || path === '/api/index' || path === '/api/index/';
+  return (
+    path === '/' ||
+    path === '/health' ||
+    path === '/api' ||
+    path === '/api/' ||
+    path === '/api/health' ||
+    path === '/api/index' ||
+    path === '/api/index/'
+  );
 }
 
 function isFaviconRoute(req) {
