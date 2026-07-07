@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validate } from '../../middlewares/validate.middleware';
+import { getValidatedQuery, validate } from '../../middlewares/validate.middleware';
 import { requirePermission } from '../../middlewares/auth.middleware';
 import { asyncHandler } from '../../common/utils/async-handler';
 import { sendSuccess } from '../../common/utils/api-response';
@@ -32,7 +32,7 @@ function resolveRange(query: { preset?: string; startDate?: string; endDate?: st
 }
 
 router.get('/', requirePermission('dashboard', 'leitura'), validate(dashboardQuerySchema), asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const { start, end } = resolveRange(req.query);
+  const { start, end } = resolveRange(getValidatedQuery(req));
   const [comandas, pedidos, produtos, openCommandsCount] = await Promise.all([
     ComandaModel.find({ tenantId: req.tenantId, status: 'finalizada', paga: true, finalizadaEm: { $gte: start, $lte: end }, deletedAt: null }),
     PedidoModel.find({ tenantId: req.tenantId, $or: [{ status: 'entregue' }, { pagamentoConfirmado: true }], updatedAt: { $gte: start, $lte: end }, deletedAt: null }),

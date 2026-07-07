@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { CrudService } from '../../common/crud/crud.service';
 import { createCrudHandlers } from '../../common/crud/crud.controller';
-import { validate } from '../../middlewares/validate.middleware';
+import { getValidatedQuery, validate } from '../../middlewares/validate.middleware';
 import { requirePermission } from '../../middlewares/auth.middleware';
 import { FilialModel } from './filial.model';
 import { filialCreateSchema, filialIdSchema, filialListSchema, filialStatusSchema, filialUpdateSchema } from './filial.validation';
@@ -21,7 +21,7 @@ router.get('/', requirePermission('configuracoes', 'leitura'), validate(filialLi
   debugSaasContext('filiais.list', {
     tenantId: (req as AuthenticatedRequest).tenantId,
     companyId: (req as AuthenticatedRequest).companyId,
-    query: req.query,
+    query: getValidatedQuery(req),
   });
   next();
 }, handlers.list);

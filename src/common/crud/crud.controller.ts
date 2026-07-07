@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest, TelaSistema } from '../types/request';
 import { asyncHandler } from '../utils/async-handler';
+import { getValidatedQuery } from '../../middlewares/validate.middleware';
 import { sendSuccess } from '../utils/api-response';
 import { CrudService } from './crud.service';
 
@@ -18,7 +19,7 @@ export function createCrudHandlers<T = any>(
 ) {
   return {
     list: asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-      const query = req.query as Record<string, unknown>;
+      const query = getValidatedQuery<Record<string, unknown>>(req);
       const data = await service.list(getScope(req), query, options?.listFilter?.(query) ?? {});
       sendSuccess(res, data);
     }),
