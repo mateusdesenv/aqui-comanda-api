@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { tenantMiddleware } from '../middlewares/tenant.middleware';
 import { authRoutes, publicAuthRoutes } from '../modules/auth/auth.routes';
-import { backupRoutes } from '../modules/backups/backup.routes';
+import { backupRoutes } from '../modules/backup/backup.routes';
 import { caixaRoutes } from '../modules/caixa/caixa.routes';
 import { clienteRoutes } from '../modules/clientes/cliente.routes';
 import { comandaRoutes } from '../modules/comandas/comanda.routes';
