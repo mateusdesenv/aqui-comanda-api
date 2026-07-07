@@ -105,6 +105,14 @@ function getBootstrapFailureReason(error) {
   return 'BOOTSTRAP_FAILED';
 }
 
+function getSafeBootstrapDetails(error, reason) {
+  if (reason !== 'ENVIRONMENT_INVALID' || !error || !error.message) {
+    return undefined;
+  }
+
+  return scrubErrorMessage(error.message).replace(/^Configuracao de ambiente invalida:\s*/i, '');
+}
+
 function loadApp() {
   if (!appInstance || !connectDatabaseFn) {
     const appModule = require('../dist/app');
@@ -160,6 +168,7 @@ module.exports = async function handler(req, res) {
       message: 'Falha ao iniciar a API',
       code: 'API_BOOTSTRAP_FAILED',
       reason,
+      details: getSafeBootstrapDetails(error, reason),
     });
   }
 };
