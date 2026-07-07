@@ -4,7 +4,7 @@ API REST em Node.js + TypeScript + Express + MongoDB/Mongoose para o Aqui Comand
 
 ## Stack
 
-- Node.js
+- Node.js 22
 - TypeScript
 - Express
 - MongoDB + Mongoose
@@ -44,6 +44,8 @@ npm run seed
 ## Deploy na Vercel
 
 O projeto possui `vercel.json`, `api/index.js`, `api/health.js` e `api/favicon.js` para executar a API Express como Function na Vercel, mantendo a rota de status independente do MongoDB.
+
+O runtime deve ser Node.js 22, definido em `package.json` e `.nvmrc`. Isso evita incompatibilidade entre CommonJS e dependências ESM usadas indiretamente pelo Firebase Admin/JWKS.
 
 Configure as Environment Variables na Vercel antes do deploy:
 
