@@ -40,5 +40,9 @@ app.get('/api/health', (_req, res) => {
   res.json(getStatusPayload());
 });
 
+app.get('/favicon.ico', (_req, res) => {
+  res.status(204).end();
+});
+
 app.use('/api', routes);
 app.use(errorMiddleware);

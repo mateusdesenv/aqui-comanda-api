@@ -43,7 +43,7 @@ npm run seed
 
 ## Deploy na Vercel
 
-O projeto possui `vercel.json` e `api/index.js` para executar a API Express como Function na Vercel.
+O projeto possui `vercel.json`, `api/index.js`, `api/health.js` e `api/favicon.js` para executar a API Express como Function na Vercel, mantendo a rota de status independente do MongoDB.
 
 Configure as Environment Variables na Vercel antes do deploy:
 
@@ -59,10 +59,11 @@ FIREBASE_PRIVATE_KEY=
 
 Rotas publicadas:
 
-- `GET /`
-- `GET /health`
-- `GET /api/health`
-- `/api/*`
+- `GET /` - status publico da API, sem depender do MongoDB
+- `GET /health` - status publico da API, sem depender do MongoDB
+- `GET /api/health` - status publico da API, sem depender do MongoDB
+- `GET /favicon.ico` - resposta 204 para evitar erro de favicon no navegador
+- `/api/*` - rotas reais da API, com MongoDB e autenticacao quando aplicavel
 
 Observacao: o modulo de backup fica em `src/modules/backup` para evitar conflito com regras antigas de `.gitignore` que ignoravam pastas chamadas `backups`.
 

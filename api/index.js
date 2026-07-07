@@ -12,7 +12,17 @@ function getRequestPath(req) {
 
 function isStatusRoute(req) {
   const path = getRequestPath(req);
-  return path === '/' || path === '/health' || path === '/api/health';
+  return path === '/' || path === '/health' || path === '/api/health' || path === '/api/index' || path === '/api/index/';
+}
+
+function isFaviconRoute(req) {
+  const path = getRequestPath(req);
+  return path === '/favicon.ico' || path === '/api/favicon.ico';
+}
+
+function sendNoContent(res) {
+  res.statusCode = 204;
+  return res.end();
 }
 
 function sendStatus(req, res) {
@@ -59,6 +69,10 @@ async function ensureDatabaseConnection() {
 }
 
 module.exports = async function handler(req, res) {
+  if (isFaviconRoute(req)) {
+    return sendNoContent(res);
+  }
+
   if (isStatusRoute(req)) {
     return sendStatus(req, res);
   }

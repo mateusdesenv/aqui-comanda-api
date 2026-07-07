@@ -4,15 +4,19 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/api/index"
+      "destination": "/api/health"
     },
     {
       "source": "/health",
-      "destination": "/api/index"
+      "destination": "/api/health"
     },
     {
       "source": "/api/health",
-      "destination": "/api/index"
+      "destination": "/api/health"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/api/favicon"
     },
     {
       "source": "/api/(.*)",
@@ -22,6 +26,12 @@
   "functions": {
     "api/index.js": {
       "maxDuration": 30
+    },
+    "api/health.js": {
+      "maxDuration": 10
+    },
+    "api/favicon.js": {
+      "maxDuration": 10
     }
   }
 }
