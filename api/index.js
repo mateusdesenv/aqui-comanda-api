@@ -2,6 +2,33 @@ let appInstance = null;
 let connectDatabaseFn = null;
 let connectionPromise = null;
 
+function getAllowedOrigins() {
+  return (process.env.CORS_ORIGIN || 'http://localhost:4200')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
+function applyCors(req, res) {
+  const requestOrigin = req.headers && req.headers.origin;
+  const allowedOrigins = getAllowedOrigins();
+
+  if (requestOrigin && allowedOrigins.includes(requestOrigin)) {
+    res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+    res.setHeader('Vary', 'Origin');
+  }
+
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    req.headers && req.headers['access-control-request-headers']
+      ? req.headers['access-control-request-headers']
+      : 'Authorization,Content-Type',
+  );
+  res.setHeader('Access-Control-Max-Age', '86400');
+}
+
 function getRequestPath(req) {
   try {
     return new URL(req.url || '/', 'http://localhost').pathname;
@@ -77,6 +104,12 @@ async function ensureDatabaseConnection() {
 }
 
 module.exports = async function handler(req, res) {
+  applyCors(req, res);
+
+  if (req.method === 'OPTIONS') {
+    return sendNoContent(res);
+  }
+
   if (isFaviconRoute(req)) {
     return sendNoContent(res);
   }

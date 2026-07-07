@@ -51,7 +51,7 @@ Configure as Environment Variables na Vercel antes do deploy:
 NODE_ENV=production
 MONGO_URI=
 MONGO_DB_NAME=aqui_comanda
-CORS_ORIGIN=https://seu-front-end.vercel.app
+CORS_ORIGIN=http://localhost:4200,https://seu-front-end.vercel.app
 FIREBASE_PROJECT_ID=aqui-comanda
 FIREBASE_CLIENT_EMAIL=
 FIREBASE_PRIVATE_KEY=
@@ -64,6 +64,8 @@ Rotas publicadas:
 - `GET /api/health` - status publico da API, sem depender do MongoDB
 - `GET /favicon.ico` - resposta 204 para evitar erro de favicon no navegador
 - `/api/*` - rotas reais da API, com MongoDB e autenticacao quando aplicavel
+
+Para liberar mais de uma origem no CORS, separe os domínios por vírgula em `CORS_ORIGIN`.
 
 Observacao: o modulo de backup fica em `src/modules/backup` para evitar conflito com regras antigas de `.gitignore` que ignoravam pastas chamadas `backups`.
 
