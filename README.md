@@ -40,6 +40,30 @@ Seed de desenvolvimento:
 npm run seed
 ```
 
+
+## Deploy na Vercel
+
+O projeto possui `vercel.json` e `api/index.js` para executar a API Express como Function na Vercel.
+
+Configure as Environment Variables na Vercel antes do deploy:
+
+```env
+NODE_ENV=production
+MONGO_URI=
+MONGO_DB_NAME=aqui_comanda
+CORS_ORIGIN=https://seu-front-end.vercel.app
+FIREBASE_PROJECT_ID=aqui-comanda
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
+```
+
+Rotas publicadas:
+
+- `GET /health`
+- `/api/*`
+
+Observacao: a pasta `src/modules/backups` precisa estar versionada no Git. O `.gitignore` foi ajustado para ignorar apenas a pasta `/backups` da raiz, sem bloquear o modulo de codigo `src/modules/backups`.
+
 ## Firebase Admin
 
 Rotas `/api/*` exigem:
