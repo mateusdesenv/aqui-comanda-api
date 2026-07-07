@@ -80,6 +80,31 @@ function sendStatus(req, res) {
   });
 }
 
+function scrubErrorMessage(message) {
+  return String(message || '')
+    .replace(/mongodb(\+srv)?:\/\/[^@]+@/gi, 'mongodb$1://<credentials>@')
+    .replace(/-----BEGIN PRIVATE KEY-----[\s\S]*?-----END PRIVATE KEY-----/g, '<private-key>');
+}
+
+function getBootstrapFailureReason(error) {
+  const name = error && error.name ? error.name : '';
+  const message = error && error.message ? error.message : '';
+
+  if (message.includes('Configuracao de ambiente invalida')) {
+    return 'ENVIRONMENT_INVALID';
+  }
+
+  if (name.includes('Mongo') || message.toLowerCase().includes('mongodb') || message.toLowerCase().includes('mongo')) {
+    return 'DATABASE_CONNECTION_FAILED';
+  }
+
+  if (message.includes('Cannot find module')) {
+    return 'BUILD_ARTIFACT_MISSING';
+  }
+
+  return 'BOOTSTRAP_FAILED';
+}
+
 function loadApp() {
   if (!appInstance || !connectDatabaseFn) {
     const appModule = require('../dist/app');
@@ -122,11 +147,19 @@ module.exports = async function handler(req, res) {
     await ensureDatabaseConnection();
     return appInstance(req, res);
   } catch (error) {
-    console.error('[vercel] Falha ao processar requisicao:', error && error.message ? error.message : error);
+    const reason = getBootstrapFailureReason(error);
+    console.error('[vercel] Falha ao processar requisicao:', {
+      reason,
+      name: error && error.name ? error.name : undefined,
+      code: error && error.code ? error.code : undefined,
+      message: error && error.message ? scrubErrorMessage(error.message) : error,
+    });
+
     return res.status(500).json({
       success: false,
       message: 'Falha ao iniciar a API',
       code: 'API_BOOTSTRAP_FAILED',
+      reason,
     });
   }
 };
