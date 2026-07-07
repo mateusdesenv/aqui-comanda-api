@@ -59,10 +59,12 @@ FIREBASE_PRIVATE_KEY=
 
 Rotas publicadas:
 
+- `GET /`
 - `GET /health`
+- `GET /api/health`
 - `/api/*`
 
-Observacao: a pasta `src/modules/backups` precisa estar versionada no Git. O `.gitignore` foi ajustado para ignorar apenas a pasta `/backups` da raiz, sem bloquear o modulo de codigo `src/modules/backups`.
+Observacao: o modulo de backup fica em `src/modules/backup` para evitar conflito com regras antigas de `.gitignore` que ignoravam pastas chamadas `backups`.
 
 ## Firebase Admin
 
@@ -86,7 +88,9 @@ Não use a `apiKey` do Firebase Web como `FIREBASE_PRIVATE_KEY`. A API ignora co
 
 ## Endpoints principais
 
+- `GET /`
 - `GET /health`
+- `GET /api/health`
 - `/api/clientes`
 - `/api/produtos`
 - `/api/mesas`

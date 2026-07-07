@@ -14,15 +14,30 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-app.get('/health', (_req, res) => {
-  res.json({
+function getStatusPayload() {
+  return {
     success: true,
     data: {
-      status: 'ok',
+      status: 'online',
       service: 'Aqui Comanda API',
+      environment: env.NODE_ENV,
+      timestamp: new Date().toISOString(),
+      uptimeSeconds: Math.round(process.uptime()),
     },
-    message: 'Operacao realizada com sucesso',
-  });
+    message: 'API online',
+  };
+}
+
+app.get('/', (_req, res) => {
+  res.json(getStatusPayload());
+});
+
+app.get('/health', (_req, res) => {
+  res.json(getStatusPayload());
+});
+
+app.get('/api/health', (_req, res) => {
+  res.json(getStatusPayload());
 });
 
 app.use('/api', routes);
