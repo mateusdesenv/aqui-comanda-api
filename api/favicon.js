@@ -1,5 +1,5 @@
 function getAllowedOrigins() {
-  return (process.env.CORS_ORIGIN || 'http://localhost:4200')
+  return (process.env.CORS_ORIGIN || '*')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
