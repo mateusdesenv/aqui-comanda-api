@@ -31,6 +31,9 @@
     "morgan": "^1.11.0",
     "zod": "^4.4.3"
   },
+  "overrides": {
+    "jose": "5.10.0"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
