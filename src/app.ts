@@ -12,10 +12,19 @@ const corsOrigins = env.CORS_ORIGIN.split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+const allowAnyCorsOrigin = corsOrigins.includes('*');
+
 app.use(helmet());
 app.use(
   cors({
-    origin: corsOrigins,
+    origin(origin, callback) {
+      if (!origin || allowAnyCorsOrigin || corsOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(null, false);
+    },
     credentials: true,
   }),
 );
