@@ -64,3 +64,5 @@ app.get('/favicon.ico', (_req, res) => {
 
 app.use('/api', routes);
 app.use(errorMiddleware);
+
+export default app;
