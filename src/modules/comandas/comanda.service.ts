@@ -179,10 +179,8 @@ export async function finalizarComanda(scope: TenantScope, id: string, formaPaga
   try {
     let finalized;
     await session.withTransaction(async () => {
-      const [comanda, sessaoAberta] = await Promise.all([
-        ComandaModel.findOne({ _id: id, tenantId: scope.tenantId, deletedAt: null }).session(session),
-        CaixaSessaoModel.findOne({ tenantId: scope.tenantId, status: 'aberto', deletedAt: null }).session(session),
-      ]);
+      const comanda = await ComandaModel.findOne({ _id: id, tenantId: scope.tenantId, deletedAt: null }).session(session);
+      const sessaoAberta = await CaixaSessaoModel.findOne({ tenantId: scope.tenantId, status: 'aberto', deletedAt: null }).session(session);
       if (!comanda) throw new AppError(404, 'Comanda nao encontrada.', ErrorCodes.NOT_FOUND);
       if (!sessaoAberta) throw new AppError(409, 'Finalizar comanda exige caixa aberto.', ErrorCodes.CONFLICT);
       if (comanda.status !== 'aberta' || comanda.paga) throw new AppError(409, 'Comanda ja finalizada.', ErrorCodes.CONFLICT);

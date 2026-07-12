@@ -76,3 +76,5 @@ mongo-data/
 
 # Misc
 *.local
+.vercel
+.env*
