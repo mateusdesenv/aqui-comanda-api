@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { paginationQuerySchema } from '../../common/validation/base.validation';
-import { productCategories, produtoTamanhos } from './produto.model';
+import { produtoTamanhos } from './produto.model';
 
 export const produtoBodySchema = z.object({
   legacyId: z.string().optional(),
   codigo: z.string().optional(),
   nome: z.string().min(1),
   descricao: z.string().default(''),
-  categoria: z.enum(productCategories),
+  categoria: z.string().trim().min(1),
   tamanho: z.enum(produtoTamanhos).default('medio'),
   preco: z.coerce.number().min(0),
   stockQuantity: z.coerce.number().min(0).optional(),

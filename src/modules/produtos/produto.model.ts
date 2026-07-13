@@ -1,7 +1,6 @@
 import { InferSchemaType, Schema, model } from 'mongoose';
 import { tenantFields } from '../../common/mongoose/base-fields';
 
-export const productCategories = ['Bebidas', 'Sinuca', 'Petiscos', 'Lanches', 'Drinks', 'Cervejas', 'Chopp', 'Extras', 'Destilados', 'Porções', 'Sobremesas'] as const;
 export const produtoTamanhos = ['mini', 'muito_pequeno', 'pequeno', 'medio', 'grande'] as const;
 
 const produtoSchema = new Schema(
@@ -10,7 +9,7 @@ const produtoSchema = new Schema(
     codigo: String,
     nome: { type: String, required: true, trim: true, index: true },
     descricao: { type: String, default: '' },
-    categoria: { type: String, enum: productCategories, required: true, index: true },
+    categoria: { type: String, required: true, trim: true, index: true },
     tamanho: { type: String, enum: produtoTamanhos, default: 'medio' },
     preco: { type: Number, required: true, min: 0 },
     stockQuantity: { type: Number, default: 0, min: 0 },

@@ -14,6 +14,7 @@ import { membershipRoutes } from '../modules/memberships/membership.routes';
 import { mesaRoutes } from '../modules/mesas/mesa.routes';
 import { pedidoRoutes } from '../modules/pedidos/pedido.routes';
 import { produtoRoutes } from '../modules/produtos/produto.routes';
+import { produtoCategoriaRoutes } from '../modules/produto-categorias/produto-categoria.routes';
 
 export const routes = Router();
 
@@ -24,6 +25,7 @@ routes.use(tenantMiddleware);
 routes.use('/auth', authRoutes);
 routes.use('/clientes', clienteRoutes);
 routes.use('/produtos', produtoRoutes);
+routes.use('/produto-categorias', produtoCategoriaRoutes);
 routes.use('/mesas', mesaRoutes);
 routes.use('/comandas', comandaRoutes);
 routes.use('/pedidos', pedidoRoutes);
